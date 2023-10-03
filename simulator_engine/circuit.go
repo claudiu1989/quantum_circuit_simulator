@@ -1,7 +1,7 @@
 package simulatorengine
 
 type QuantumGate struct {
-	Qubits             []int
+	N_qubits           int
 	BasisStatesActions map[int]map[int]complex128
 }
 
