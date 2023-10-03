@@ -10,21 +10,21 @@ const equalityThreshold = 1e-5
 
 type testApplyGate struct {
 	Input               Qudit
-	Expected_amplitudes map[int]complex128
+	Expected_amplitudes map[string]complex128
 }
 
 var testCasesApplyGate = []testApplyGate{
 	{
-		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(0, 0), 1: complex(1, 0)}},
-		map[int]complex128{0: complex(1, 0), 1: complex(0, 0)},
+		Qudit{N_qubits: 1, Amplitudes: map[string]complex128{"0": complex(0, 0), "1": complex(1, 0)}},
+		map[string]complex128{"0": complex(1, 0), "1": complex(0, 0)},
 	},
 	{
-		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}},
-		map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)},
+		Qudit{N_qubits: 1, Amplitudes: map[string]complex128{"0": complex(1, 0), "1": complex(0, 0)}},
+		map[string]complex128{"0": complex(1/math.Sqrt(2), 0), "1": complex(1/math.Sqrt(2), 0)},
 	},
 	{
-		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}},
-		map[int]complex128{0: complex(0.5+1/math.Sqrt(2), 0), 1: complex(0.5, 0)},
+		Qudit{N_qubits: 1, Amplitudes: map[string]complex128{"0": complex(1/math.Sqrt(2), 0), "1": complex(1/math.Sqrt(2), 0)}},
+		map[string]complex128{"0": complex(0.5+1/math.Sqrt(2), 0), "1": complex(0.5, 0)},
 	},
 }
 
@@ -33,9 +33,9 @@ func TestApplyGate(t *testing.T) {
 		input := test_case.Input
 		expected_amplitudes := test_case.Expected_amplitudes
 
-		amplitudes_0 := map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}
-		amplitudes_1 := map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}
-		gate_actions := map[int]map[int]complex128{0: amplitudes_0, 1: amplitudes_1}
+		amplitudes_0 := map[string]complex128{"0": complex(1/math.Sqrt(2), 0), "1": complex(1/math.Sqrt(2), 0)}
+		amplitudes_1 := map[string]complex128{"0": complex(1, 0), "1": complex(0, 0)}
+		gate_actions := map[string]map[string]complex128{"0": amplitudes_0, "1": amplitudes_1}
 		qubits := make([]int, 1)
 		qubits[0] = 0
 
@@ -47,7 +47,7 @@ func TestApplyGate(t *testing.T) {
 
 		for basis_state, out_amplitude := range output.Amplitudes {
 			if cmplx.Abs(out_amplitude-expected_amplitudes[basis_state]) > equalityThreshold {
-				t.Errorf("For basis state %d, the amplitude is %g, instead of %g", basis_state, out_amplitude, expected_amplitudes[basis_state])
+				t.Errorf("For basis state %s, the amplitude is %g, instead of %g", basis_state, out_amplitude, expected_amplitudes[basis_state])
 			}
 		}
 	}

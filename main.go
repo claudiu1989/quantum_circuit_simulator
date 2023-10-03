@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	amplitudes := map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}
-	input := simulatorengine.Qudit{N_qubits: 2, Amplitudes: amplitudes}
-	fmt.Println(input.Amplitudes)
-	fmt.Println(input.N_qubits)
+	amplitudes := map[string]complex128{"0": complex(1/math.Sqrt(2), 0), "1": complex(1/math.Sqrt(2), 0)}
+	input_qudit := simulatorengine.Qudit{N_qubits: 2, Amplitudes: amplitudes}
+	fmt.Println(input_qudit.Amplitudes)
+	fmt.Println(input_qudit.N_qubits)
 }

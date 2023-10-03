@@ -2,12 +2,12 @@ package simulatorengine
 
 type QuantumGate struct {
 	Qubits             []int
-	BasisStatesActions map[int]map[int]complex128
+	BasisStatesActions map[string]map[string]complex128
 }
 
 // Method that simulates a quantum gate
 func (g QuantumGate) ApplyGate(input Qudit) Qudit {
-	output_amplitudes := make(map[int]complex128)
+	output_amplitudes := make(map[string]complex128)
 	for basis_state, amplitude := range input.Amplitudes {
 		// Accumulate the contributions to the output state
 		// for the current input basis state
