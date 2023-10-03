@@ -2,25 +2,53 @@ package simulatorengine
 
 import (
 	"math"
+	"math/cmplx"
 	"testing"
 )
 
-func TestApplyGate(t *testing.T) {
-	amplitudes_0 := map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}
-	amplitudes_1 := map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}
-	gate_actions := map[int]map[int]complex128{0: amplitudes_0, 1: amplitudes_1}
-	some_gate := QuantumGate{N_qubits: 1, BasisStatesActions: gate_actions}
-	input := Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(0, 0), 1: complex(1, 0)}}
-	output := some_gate.ApplyGate(input)
-	if output.N_qubits != input.N_qubits {
-		t.Errorf("The output has %d qubits instead of %d", output.N_qubits, input.N_qubits)
-	}
+const equalityThreshold = 1e-5
 
-	expected_amplitudes := map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}
-	for basis_state, out_amplitude := range output.Amplitudes {
-		if out_amplitude != expected_amplitudes[basis_state] {
-			t.Errorf("For basis state %d, the amplitude is %g, instead of %g", basis_state, out_amplitude, expected_amplitudes[basis_state])
+type testApplyGate struct {
+	Input               Qudit
+	Expected_amplitudes map[int]complex128
+}
+
+var testCasesApplyGate = []testApplyGate{
+	{
+		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(0, 0), 1: complex(1, 0)}},
+		map[int]complex128{0: complex(1, 0), 1: complex(0, 0)},
+	},
+	{
+		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}},
+		map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)},
+	},
+	{
+		Qudit{N_qubits: 1, Amplitudes: map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}},
+		map[int]complex128{0: complex(0.5+1/math.Sqrt(2), 0), 1: complex(0.5, 0)},
+	},
+}
+
+func TestApplyGate(t *testing.T) {
+	for _, test_case := range testCasesApplyGate {
+		input := test_case.Input
+		expected_amplitudes := test_case.Expected_amplitudes
+
+		amplitudes_0 := map[int]complex128{0: complex(1/math.Sqrt(2), 0), 1: complex(1/math.Sqrt(2), 0)}
+		amplitudes_1 := map[int]complex128{0: complex(1, 0), 1: complex(0, 0)}
+		gate_actions := map[int]map[int]complex128{0: amplitudes_0, 1: amplitudes_1}
+		qubits := make([]int, 1)
+		qubits[0] = 0
+
+		some_gate := QuantumGate{Qubits: qubits, BasisStatesActions: gate_actions}
+		output := some_gate.ApplyGate(input)
+		if output.N_qubits != input.N_qubits {
+			t.Errorf("The output has %d qubits instead of %d", output.N_qubits, input.N_qubits)
+		}
+
+		for basis_state, out_amplitude := range output.Amplitudes {
+			if cmplx.Abs(out_amplitude-expected_amplitudes[basis_state]) > equalityThreshold {
+				t.Errorf("For basis state %d, the amplitude is %g, instead of %g", basis_state, out_amplitude, expected_amplitudes[basis_state])
+			}
 		}
 	}
-
 }
