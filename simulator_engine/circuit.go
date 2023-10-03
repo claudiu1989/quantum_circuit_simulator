@@ -1,7 +1,7 @@
 package simulatorengine
 
 type QuantumGate struct {
-	N_qubits           int
+	Qubits             []int
 	BasisStatesActions map[int]map[int]complex128
 }
 
@@ -12,11 +12,11 @@ func (g QuantumGate) ApplyGate(input Qudit) Qudit {
 		// Accumulate the contributions to the output state
 		// for the current input basis state
 		for contribution_basis_state, contribution_amplitude := range g.BasisStatesActions[basis_state] {
-			cr_amplitude, exists := output_amplitudes[contribution_basis_state]
+			_, exists := output_amplitudes[contribution_basis_state]
 			if exists {
 				output_amplitudes[contribution_basis_state] += amplitude * contribution_amplitude
 			} else {
-				output_amplitudes[contribution_basis_state] = cr_amplitude
+				output_amplitudes[contribution_basis_state] = amplitude * contribution_amplitude
 			}
 		}
 	}
