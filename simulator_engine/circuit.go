@@ -6,7 +6,7 @@ type QuantumGate struct {
 }
 
 // Method that simulates a quantum gate
-func (g QuantumGate) ApplyGate(input Qudit) Qudit {
+func (g QuantumGate) ApplyGateContiguousQubits(input Qudit) Qudit {
 	output_amplitudes := make(map[string]complex128)
 	for basis_state, amplitude := range input.Amplitudes {
 		// Accumulate the contributions to the output state
