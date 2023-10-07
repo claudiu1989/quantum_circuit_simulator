@@ -8,12 +8,14 @@ import (
 
 const equalityThreshold = 1e-5
 
-type testApplyGateContiguousQubits struct {
+// TESTS FOR ApplyGateContiguousQubits
+
+type testCaseApplyGateContiguousQubits struct {
 	Input               Qudit
 	Expected_amplitudes map[string]complex128
 }
 
-var testCasesApplyGateContiguousQubits = []testApplyGateContiguousQubits{
+var testCasesApplyGateContiguousQubits = []testCaseApplyGateContiguousQubits{
 	{
 		Qudit{N_qubits: 1, Amplitudes: map[string]complex128{"0": complex(0, 0), "1": complex(1, 0)}},
 		map[string]complex128{"0": complex(1, 0), "1": complex(0, 0)},
@@ -28,7 +30,7 @@ var testCasesApplyGateContiguousQubits = []testApplyGateContiguousQubits{
 	},
 }
 
-func TestApplyGate(t *testing.T) {
+func TestApplyGateContiguousQubits(t *testing.T) {
 	for _, test_case := range testCasesApplyGateContiguousQubits {
 		input := test_case.Input
 		expected_amplitudes := test_case.Expected_amplitudes
@@ -49,6 +51,45 @@ func TestApplyGate(t *testing.T) {
 			if cmplx.Abs(out_amplitude-expected_amplitudes[basis_state]) > equalityThreshold {
 				t.Errorf("For basis state %s, the amplitude is %g, instead of %g", basis_state, out_amplitude, expected_amplitudes[basis_state])
 			}
+		}
+	}
+}
+
+type testCaseForGetStateOnQubitsSubset struct {
+	Input_state           string
+	Qubits_indices        []int
+	Expected_output_state string
+}
+
+var testCasesForGetStateOnQubitsSubset = []testCaseForGetStateOnQubitsSubset{
+	{
+		"00101",
+		[]int{1, 2, 4},
+		"011",
+	},
+	{
+		"1",
+		[]int{0},
+		"1",
+	},
+	{
+		"0010101000",
+		[]int{2},
+		"1",
+	},
+	{
+		"011110110",
+		[]int{0, 5, 8},
+		"000",
+	},
+}
+
+// TEST getStateOnQubitsSubset
+func TestGetStateOnQubitsSubset(t *testing.T) {
+	for _, test_case := range testCasesForGetStateOnQubitsSubset {
+		partial_state := getStateOnQubitsSubset(test_case.Input_state, test_case.Qubits_indices)
+		if partial_state != test_case.Expected_output_state {
+			t.Errorf("The output state is %s, but the state %s was expected", partial_state, test_case.Expected_output_state)
 		}
 	}
 }
