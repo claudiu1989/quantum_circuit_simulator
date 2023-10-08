@@ -1,0 +1,8 @@
+Input
+1|0>+0|1>
+Gate Inverter
+|0> -> |1>
+|1> -> |0>
+Circuit
+Inverter(0)
+Inverter(0)
