@@ -60,7 +60,8 @@ func (g QuantumGate) ApplyGate(input Qudit) Qudit {
 	return output
 }
 
-// Get the state for a subset of qubits
+// Get the state for a subset of qubits (qubits_indices),
+// from an arbitrary state (input_state)
 func getStateOnQubitsSubset(input_state string, qubits_indices []int) string {
 	partial_state := ""
 	for _, qubit_index := range qubits_indices {
