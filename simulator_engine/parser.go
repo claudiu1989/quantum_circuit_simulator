@@ -31,19 +31,21 @@ func readFile(file_path string) []string {
 
 func parseGetInputQudit(file_lines []string) Qudit {
 	input_qudit_string := file_lines[1]
-	var amplitudes map[string]complex128
+	amplitudes := make(map[string]complex128)
 	var augumente_qudit_sb strings.Builder
 	for i, rune_qudit := range input_qudit_string {
+		augumente_qudit_sb.WriteRune(rune_qudit)
 		if i < len(input_qudit_string)-1 && (input_qudit_string[i+1:i+2] == "+" || input_qudit_string[i+1:i+2] == "-") {
 			augumente_qudit_sb.WriteString(specialSplitString)
 		}
-		augumente_qudit_sb.WriteRune(rune_qudit)
 	}
 	var n_qubits int
-	amplitude_state_pairs := strings.Split(augumente_qudit_sb.String(), specialSplitString)
+	augumente_qudit_str := augumente_qudit_sb.String()
+	amplitude_state_pairs := strings.Split(augumente_qudit_str, specialSplitString)
 	for _, cr_amplitude_state_pair := range amplitude_state_pairs {
 		amplitude_state_arr := strings.Split(cr_amplitude_state_pair, "|")
 		cr_amplitude, err := strconv.ParseComplex(amplitude_state_arr[0], 128)
+		fmt.Println(err) // TODO: check errors
 		cr_state := amplitude_state_arr[1][:len(amplitude_state_arr[1])-1]
 		n_qubits = len(cr_state)
 		amplitudes[cr_state] = cr_amplitude
